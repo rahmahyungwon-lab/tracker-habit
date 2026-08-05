@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit & Schedule Tracker - Agustus</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Scrollbar halus untuk tabel matriks */
+    .scrollbar-custom::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .scrollbar-custom::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: #a7f3d0;
+      border-radius: 4px;
+    }
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+      background: #34d399;
+    }
+  </style>
+</head>
+<body class="bg-emerald-50/40 text-slate-800 font-sans min-h-screen pb-16">
+
+  <!-- Header Section -->
+  <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="bg-emerald-600/80 text-emerald-100 text-xs font-semibold px-2.5 py-1 rounded-md tracking-wide uppercase border border-emerald-500/50">
+              Habit Tracker 31 Hari
+            </span>
+            <span id="cloud-status" class="flex items-center gap-1.5 text-xs text-emerald-100 bg-emerald-900/60 px-2.5 py-1 rounded-md border border-emerald-500/40">
+              <span id="cloud-indicator" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="cloud-status-text">Menghubungkan Cloud Publik...</span>
+            </span>
+            <span class="text-xs bg-emerald-900/40 text-emerald-200 px-2.5 py-1 rounded-md border border-emerald-700/50 flex items-center gap-1">
+              🌐 ID Publik: <strong id="header-tracker-id" class="text-white font-mono">default</strong>
+            </span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold mt-2 text-white flex items-center gap-2">
+            Habit Tracker <span class="text-emerald-300 font-serif italic">Bulan Agustus</span>
+          </h1>
+          <p class="text-emerald-100 text-xs sm:text-sm mt-1">
+            Dapat diakses publik dari mana saja. 1 Agustus = Sabtu.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="sharePublicLink()" class="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+            <span>Salin Link Publik</span>
+          </button>
+          <button onclick="openRoomModal()" class="bg-emerald-900/60 hover:bg-emerald-900/80 text-emerald-100 border border-emerald-500/50 text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>Ganti ID Tracker</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-4 border-t border-emerald-600/40">
+        <div class="bg-emerald-900/40 backdrop-blur border border-emerald-600/40 p-3 rounded-xl">
+          <p class="text-emerald-200 text-xs">Total Rutinitas</p>
+          <p class="text-xl font-bold text-white mt-0.5"><span id="metric-total-habits">22</span> <span class="text-xs font-normal text-emerald-300">kegiatan</span></p>
+        </div>
+        <div class="bg-emerald-900/40 backdrop-blur border border-emerald-600/40 p-3 rounded-xl">
+          <p class="text-emerald-200 text-xs">Capaian Bulan Ini</p>
+          <p class="text-xl font-bold text-emerald-300 mt-0.5" id="metric-month-percent">0%</p>
+        </div>
+        <div class="bg-emerald-900/40 backdrop-blur border border-emerald-600/40 p-3 rounded-xl">
+          <p class="text-emerald-200 text-xs">Hari Aktif Terisi</p>
+          <p class="text-xl font-bold text-white mt-0.5"><span id="metric-active-days">0</span> <span class="text-xs font-normal text-emerald-300">/ 31 hari</span></p>
+        </div>
+        <div class="bg-emerald-900/40 backdrop-blur border border-emerald-600/40 p-3 rounded-xl">
+          <p class="text-emerald-200 text-xs">Puasa Terlaksana</p>
+          <p class="text-xl font-bold text-emerald-200 mt-0.5"><span id="metric-fasting-count">0</span> <span class="text-xs font-normal text-emerald-300">kali</span></p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto px-4 mt-6">
+    <!-- Navigation Tabs & Actions -->
+    <div class="flex items-center justify-between border-b border-emerald-200 pb-2 mb-6 gap-2 overflow-x-auto">
+      <div class="flex items-center gap-2">
+        <button id="tab-daily-btn" onclick="switchTab('daily')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-emerald-600 text-white shadow-md shadow-emerald-200 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <span>Tampilan Harian</span>
+        </button>
+
+        <button id="tab-matrix-btn" onclick="switchTab('matrix')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-white text-slate-600 hover:bg-emerald-50 border border-emerald-100 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          <span>Matriks 31 Hari</span>
+        </button>
+
+        <button id="tab-manage-btn" onclick="switchTab('manage')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-white text-slate-600 hover:bg-emerald-50 border border-emerald-100 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          <span>Kelola Jadwal</span>
+        </button>
+      </div>
+
+      <button onclick="openModal()" class="flex items-center gap-1.5 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition border border-emerald-300 whitespace-nowrap">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <span>Tambah Rutinitas</span>
+      </button>
+    </div>
+
+    <!-- VIEW 1: DAILY TRACKER -->
+    <div id="view-daily" class="space-y-6">
+      <!-- Day Carousel Bar -->
+      <div class="bg-white p-4 rounded-2xl border border-emerald-100 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-200">
+              Agustus (1 = Sabtu)
+            </span>
+            <span class="text-xs text-slate-500">Pilih Tanggal:</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="prevDay()" class="p-1.5 rounded-lg border border-slate-200 hover:bg-emerald-50 text-slate-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <span id="current-day-label" class="text-sm font-bold text-emerald-900 px-1">
+              Hari ke-1 (Sab)
+            </span>
+            <button onclick="nextDay()" class="p-1.5 rounded-lg border border-slate-200 hover:bg-emerald-50 text-slate-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Days Slider -->
+        <div id="days-slider" class="flex gap-2 overflow-x-auto pb-2 scrollbar-custom">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Daily Overview Banner & Fasting Banner -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Progress Bar -->
+        <div class="md:col-span-2 bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <span>Progres Tanggal <span id="banner-day-num">1</span> Agustus</span>
+                <span id="banner-day-name" class="text-xs font-normal text-slate-500">(Sab)</span>
+              </h3>
+              <span id="banner-progress-text" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
+                0 / 22 Selesai (0%)
+              </span>
+            </div>
+
+            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden mt-3">
+              <div id="banner-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
+            <span>Centang kegiatan saat Anda menyelesaikannya</span>
+            <span id="perfect-badge" class="hidden text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              🎉 Sempurna! Semua tuntas
+            </span>
+          </div>
+        </div>
+
+        <!-- Fasting Card -->
+        <div id="fasting-card" class="p-5 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+                🌙 Puasa Sunnah
+              </span>
+              <span id="fasting-day-badge" class="text-[10px] font-semibold bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full">
+                Senin / Kamis
+              </span>
+            </div>
+            <h4 class="font-bold text-slate-800 mt-1 text-base">
+              Puasa Senin & Kamis
+            </h4>
+            <p id="fasting-desc" class="text-xs text-slate-600 mt-1">
+              Jadwal sunnah menunaikan ibadah puasa Senin & Kamis.
+            </p>
+          </div>
+
+          <button id="fasting-btn" onclick="toggleFastingCurrentDay()" class="mt-4 w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border bg-white text-emerald-800 border-emerald-300 hover:bg-emerald-100 transition shadow-sm">
+            <span>Tandai Puasa Hari Ini</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Checklist Items -->
+      <div class="bg-white rounded-2xl border border-emerald-100 shadow-sm overflow-hidden">
+        <div class="p-4 bg-emerald-50/60 border-b border-emerald-100 flex items-center justify-between">
+          <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Daftar Kegiatan Rutin</span>
+          </h3>
+          <span class="text-xs text-slate-500">Klik untuk menyelesaikannya</span>
+        </div>
+
+        <div id="checklist-container" class="divide-y divide-emerald-50">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Daily Notes Area -->
+      <div class="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm">
+        <label class="block text-sm font-bold text-slate-800 mb-2">
+          Catatan & Evaluasi Harian (Hari ke-<span id="notes-day-num">1</span>):
+        </label>
+        <textarea
+          id="daily-note-input"
+          oninput="handleNoteInput(this.value)"
+          placeholder="Tuliskan catatan ibadah, juz/ayat hafalan, kegiatan tambahan, atau evaluasi harian Anda di sini..."
+          rows="3"
+          class="w-full p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+        ></textarea>
+        <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
+          <span>Tersimpan otomatis di cloud publik</span>
+          <span id="note-char-count">0 karakter</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: 31-DAY MATRIX GRID -->
+    <div id="view-matrix" class="hidden bg-white rounded-2xl border border-emerald-100 shadow-sm p-4">
+      <div class="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-slate-800 text-base">Matriks Rutinitas 31 Hari (Bulan Agustus)</h3>
+          <p class="text-xs text-slate-500">Klik langsung pada kotak sel untuk mencentang/membatalkan status kegiatan.</p>
+        </div>
+        <div class="flex items-center gap-3 text-xs">
+          <span class="flex items-center gap-1"><span class="w-3.5 h-3.5 bg-emerald-500 rounded"></span> Selesai</span>
+          <span class="flex items-center gap-1"><span class="w-3.5 h-3.5 bg-slate-100 border border-slate-300 rounded"></span> Belum</span>
+          <span class="flex items-center gap-1"><span class="w-3.5 h-3.5 bg-emerald-200 rounded"></span> Hari Senin/Kamis</span>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto scrollbar-custom">
+        <table class="w-full border-collapse text-xs">
+          <thead>
+            <tr class="bg-emerald-50">
+              <th class="p-2.5 border border-emerald-100 text-left min-w-[170px] sticky left-0 bg-emerald-50 z-10 text-emerald-900 font-bold">
+                Waktu & Kegiatan
+              </th>
+              <!-- Days 1..31 -->
+              <tbody id="matrix-head-days" class="contents"></tbody>
+            </tr>
+          </thead>
+          <tbody id="matrix-body-rows">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW 3: MANAGE HABITS SCHEDULE -->
+    <div id="view-manage" class="hidden space-y-4">
+      <div class="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="font-bold text-slate-800 text-base">Kelola Jadwal Rutinitas</h3>
+          <p class="text-xs text-slate-500">Ubah jam, nama kegiatan, atau reset ke template jadwal asli foto.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="resetToDefaultPhoto()" class="px-3.5 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-xl border border-rose-200 transition">
+            Reset Sesuai Foto Asli
+          </button>
+          <button onclick="openModal()" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm transition flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span>Tambah Kegiatan</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-emerald-100 shadow-sm overflow-hidden">
+        <div id="manage-list-container" class="divide-y divide-slate-100">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ADD / EDIT HABIT MODAL -->
+  <div id="habit-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-emerald-100 p-6">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 id="modal-title" class="font-bold text-slate-800 text-lg">Tambah Rutinitas Baru</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <input type="hidden" id="modal-habit-id" value="">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Waktu / Jam (Contoh: 04.30)</label>
+          <input type="text" id="modal-time-input" placeholder="04.30" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kegiatan / Habit</label>
+          <input type="text" id="modal-name-input" placeholder="Contoh: Shalat Dhuha" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kategori</label>
+          <select id="modal-category-input" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
+            <option value="Ibadah">Ibadah</option>
+            <option value="Kesehatan">Kesehatan</option>
+            <option value="Edukasi">Edukasi</option>
+            <option value="Keluarga">Keluarga</option>
+            <option value="Kebiasaan">Kebiasaan</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-6 pt-3 border-t border-slate-100">
+        <button onclick="closeModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+          Batal
+        </button>
+        <button onclick="saveModalHabit()" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm">
+          Simpan Kegiatan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLIC ROOM MODAL -->
+  <div id="room-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-emerald-100 p-6">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 class="font-bold text-slate-800 text-lg">Atur Kode Tracker Publik</h3>
+        <button onclick="closeRoomModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-600 mb-4">
+        Masukkan ID atau nama publik (contoh: <code class="bg-slate-100 px-1 py-0.5 rounded text-emerald-700 font-bold">habit-agustus-ku</code>). Perangkat lain yang menggunakan ID yang sama dapat melihat & mengedit tracker secara bersamaan.
+      </p>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Kode / ID Publik Tracker</label>
+        <input type="text" id="room-id-input" placeholder="agustus-habit-tracker" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-mono">
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-6 pt-3 border-t border-slate-100">
+        <button onclick="closeRoomModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+          Batal
+        </button>
+        <button onclick="changeRoomId()" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm">
+          Terapkan Kode
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Popup -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-emerald-800 text-white px-4 py-3 rounded-xl shadow-lg border border-emerald-600 hidden items-center gap-2">
+    <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    <span id="toast-text" class="text-sm font-medium">Data berhasil diperbarui</span>
+  </div>
+
+  <!-- Firebase Module Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // 22 Default habits extracted directly from user's photo
+    const DEFAULT_HABITS = [
+      { id: 'h1', time: '04.30', name: 'Shalat Lail', category: 'Ibadah' },
+      { id: 'h2', time: '04.45', name: 'Sholat, Dzikir, Sedekah subuh', category: 'Ibadah' },
+      { id: 'h3', time: '05.10', name: 'Mengaji', category: 'Ibadah' },
+      { id: 'h4', time: '05.20', name: 'Menghafal qur\'an', category: 'Ibadah' },
+      { id: 'h5', time: '06.10', name: 'Latihan peregangan', category: 'Kesehatan' },
+      { id: 'h6', time: '06.40', name: 'Salat Dhuha', category: 'Ibadah' },
+      { id: 'h7', time: '07.30', name: 'Antar anak sekolah', category: 'Keluarga' },
+      { id: 'h8', time: '08.00', name: 'Joging', category: 'Kesehatan' },
+      { id: 'h9', time: '10.00', name: 'Jemput anak sekolah', category: 'Keluarga' },
+      { id: 'h10', time: '11.00', name: 'Istirahat (Mandi)', category: 'Kebiasaan' },
+      { id: 'h11', time: '12.30', name: 'Sholat', category: 'Ibadah' },
+      { id: 'h12', time: '13.00', name: 'Istirahat', category: 'Kebiasaan' },
+      { id: 'h13', time: '14.00', name: 'Belajar Bahasa China', category: 'Edukasi' },
+      { id: 'h14', time: '15.30', name: 'Shalat Ashar', category: 'Ibadah' },
+      { id: 'h15', time: '16.00', name: 'Dzikir', category: 'Ibadah' },
+      { id: 'h16', time: '17.00', name: 'Menghafal', category: 'Edukasi' },
+      { id: 'h17', time: '18.20', name: 'Shalat Maghrib', category: 'Ibadah' },
+      { id: 'h18', time: '18.30', name: 'Mengaji', category: 'Ibadah' },
+      { id: 'h19', time: '19.30', name: 'Shalat Isya, murojaah juz 30', category: 'Ibadah' },
+      { id: 'h20', time: '20.00', name: 'Belajar bahasa China', category: 'Edukasi' },
+      { id: 'h21', time: '20.31', name: 'Istirahat', category: 'Kebiasaan' },
+      { id: 'h22', time: '22.00', name: 'Al-Mulk, Tidur', category: 'Ibadah' }
+    ];
+
+    // Read room ID from URL param if available
+    const urlParams = new URLSearchParams(window.location.search);
+    const customRoom = urlParams.get('tracker') || urlParams.get('room') || 'agustus-2026-public';
+
+    // Global State
+    window.state = {
+      habits: DEFAULT_HABITS,
+      records: {},
+      fastingRecords: {},
+      dayNotes: {},
+      selectedDay: 1,
+      activeTab: 'daily',
+      trackerRoomId: customRoom,
+      db: null,
+      auth: null,
+      appId: 'agustus-habit-tracker',
+      user: null,
+      unsubscribeSnapshot: null
+    };
+
+    const TOTAL_DAYS = 31;
+
+    // Day 1 = Sabtu (Saturday)
+    window.getDayDetails = function(day) {
+      const daysOfWeek = ['Sab', 'Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum'];
+      const index = (day - 1) % 7;
+      const name = daysOfWeek[index];
+      const isMondayOrThursday = (name === 'Sen' || name === 'Kam');
+      return { name, isMondayOrThursday };
+    };
+
+    // Firebase Init
+    async function initFirebase() {
+      const cloudStatusText = document.getElementById('cloud-status-text');
+      const cloudIndicator = document.getElementById('cloud-indicator');
+      document.getElementById('header-tracker-id').textContent = window.state.trackerRoomId;
+
+      try {
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'agustus-habit-tracker';
+        window.state.appId = appId;
+
+        if (firebaseConfig && firebaseConfig.apiKey) {
+          const app = initializeApp(firebaseConfig);
+          const auth = getAuth(app);
+          const db = getFirestore(app);
+          window.state.auth = auth;
+          window.state.db = db;
+
+          // Rule 3: Auth First
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+          window.state.user = auth.currentUser;
+
+          if (cloudStatusText) cloudStatusText.textContent = 'Akses Publik Aktif';
+          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-emerald-400';
+
+          attachRealtimeListener();
+
+        } else {
+          if (cloudStatusText) cloudStatusText.textContent = 'Mode Lokal';
+          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-amber-400';
+          renderAll();
+        }
+      } catch (e) {
+        console.warn("Firebase fallback:", e);
+        if (cloudStatusText) cloudStatusText.textContent = 'Mode Lokal';
+        if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-amber-400';
+        renderAll();
+      }
+    }
+
+    // Attach Realtime Listener
+    window.attachRealtimeListener = function() {
+      const { db, appId, trackerRoomId } = window.state;
+      if (!db) return;
+
+      if (window.state.unsubscribeSnapshot) {
+        window.state.unsubscribeSnapshot();
+      }
+
+      // Rule 1: Correct Firestore Public Path
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'agustus_tracker_' + trackerRoomId);
+
+      window.state.unsubscribeSnapshot = onSnapshot(docRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          if (data.habits) window.state.habits = data.habits;
+          if (data.records) window.state.records = data.records;
+          if (data.fastingRecords) window.state.fastingRecords = data.fastingRecords;
+          if (data.dayNotes) window.state.dayNotes = data.dayNotes;
+        } else {
+          saveToCloud();
+        }
+        renderAll();
+      }, (err) => {
+        console.warn("Firestore listener warning:", err);
+        renderAll();
+      });
+    };
+
+    // Save to Cloud
+    window.saveToCloud = async function() {
+      const { db, appId, trackerRoomId, habits, records, fastingRecords, dayNotes } = window.state;
+      if (!db) return;
+
+      const cloudStatusText = document.getElementById('cloud-status-text');
+      if (cloudStatusText) cloudStatusText.textContent = 'Menyimpan ke Cloud...';
+
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'agustus_tracker_' + trackerRoomId);
+        await setDoc(docRef, {
+          habits,
+          records,
+          fastingRecords,
+          dayNotes,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        if (cloudStatusText) cloudStatusText.textContent = 'Akses Publik Aktif';
+      } catch (err) {
+        console.error("Save error:", err);
+        if (cloudStatusText) cloudStatusText.textContent = 'Gagal menyimpan';
+      }
+    };
+
+    // UI RENDER FUNCTIONS
+    window.renderAll = function() {
+      updateMetrics();
+      renderDaysSlider();
+      renderDailyTracker();
+      renderMatrix();
+      renderManageList();
+    };
+
+    function updateMetrics() {
+      const { habits, records, fastingRecords } = window.state;
+      document.getElementById('metric-total-habits').textContent = habits.length;
+
+      let completedCount = 0;
+      let activeDaysSet = new Set();
+
+      Object.keys(records).forEach(day => {
+        const dayObj = records[day] || {};
+        let hasChecked = false;
+        Object.values(dayObj).forEach(val => {
+          if (val) {
+            completedCount++;
+            hasChecked = true;
+          }
+        });
+        if (hasChecked) activeDaysSet.add(day);
+      });
+
+      const totalPossible = habits.length * TOTAL_DAYS;
+      const monthPercent = totalPossible > 0 ? Math.round((completedCount / totalPossible) * 100) : 0;
+      
+      document.getElementById('metric-month-percent').textContent = monthPercent + '%';
+      document.getElementById('metric-active-days').textContent = activeDaysSet.size;
+
+      const fastingCount = Object.values(fastingRecords).filter(Boolean).length;
+      document.getElementById('metric-fasting-count').textContent = fastingCount;
+    }
+
+    function renderDaysSlider() {
+      const slider = document.getElementById('days-slider');
+      slider.innerHTML = '';
+
+      for (let d = 1; d <= TOTAL_DAYS; d++) {
+        const { name, isMondayOrThursday } = getDayDetails(d);
+        const isSelected = window.state.selectedDay === d;
+        const dayRec = window.state.records[d] || {};
+        const doneCount = window.state.habits.filter(h => dayRec[h.id]).length;
+        const isComplete = window.state.habits.length > 0 && doneCount === window.state.habits.length;
+
+        const btn = document.createElement('button');
+        btn.onclick = () => {
+          window.state.selectedDay = d;
+          renderAll();
+        };
+
+        let baseClasses = "flex-shrink-0 w-12 py-2.5 rounded-xl border flex flex-col items-center justify-between transition ";
+        if (isSelected) {
+          baseClasses += "bg-emerald-600 text-white border-emerald-600 shadow-sm scale-105 font-bold";
+        } else if (isComplete) {
+          baseClasses += "bg-emerald-100 text-emerald-900 border-emerald-300";
+        } else {
+          baseClasses += "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50";
+        }
+
+        btn.className = baseClasses;
+        btn.innerHTML = `
+          <span class="text-[10px] ${isSelected ? 'text-emerald-100' : 'text-slate-500'}">${name}</span>
+          <span class="text-base my-0.5">${d}</span>
+          ${isMondayOrThursday ? `<span class="text-[9px] px-1 rounded ${isSelected ? 'bg-emerald-700 text-emerald-200' : 'bg-emerald-200 text-emerald-800'}">Puasa</span>` : ''}
+        `;
+
+        slider.appendChild(btn);
+      }
+    }
+
+    function renderDailyTracker() {
+      const day = window.state.selectedDay;
+      const { name, isMondayOrThursday } = getDayDetails(day);
+
+      document.getElementById('current-day-label').textContent = `Hari ke-${day} (${name})`;
+      document.getElementById('banner-day-num').textContent = day;
+      document.getElementById('banner-day-name').textContent = `(${name})`;
+      document.getElementById('notes-day-num').textContent = day;
+
+      const currentRecords = window.state.records[day] || {};
+      const completedToday = window.state.habits.filter(h => currentRecords[h.id]).length;
+      const totalHabits = window.state.habits.length;
+      const percent = totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0;
+
+      document.getElementById('banner-progress-text').textContent = `${completedToday} / ${totalHabits} Selesai (${percent}%)`;
+      document.getElementById('banner-progress-bar').style.width = percent + '%';
+
+      const perfectBadge = document.getElementById('perfect-badge');
+      if (percent === 100 && totalHabits > 0) {
+        perfectBadge.classList.remove('hidden');
+      } else {
+        perfectBadge.classList.add('hidden');
+      }
+
+      // Fasting card styling
+      const fastingBtn = document.getElementById('fasting-btn');
+      const fastingBadge = document.getElementById('fasting-day-badge');
+      const fastingDesc = document.getElementById('fasting-desc');
+      const isFastingChecked = Boolean(window.state.fastingRecords[day]);
+
+      if (isMondayOrThursday) {
+        fastingBadge.classList.remove('hidden');
+        fastingDesc.textContent = `Hari ini (${name}) disunnahkan untuk menunaikan Puasa Sunnah.`;
+      } else {
+        fastingBadge.classList.add('hidden');
+        fastingDesc.textContent = `Jadwal rutin puasa sunnah dilaksanakan setiap hari Senin & Kamis.`;
+      }
+
+      if (isFastingChecked) {
+        fastingBtn.className = "mt-4 w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-emerald-600 text-white border border-emerald-600 shadow-sm transition";
+        fastingBtn.innerHTML = `✓ Alhamdulillah, Puasa Terlaksana`;
+      } else {
+        fastingBtn.className = "mt-4 w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border bg-white text-emerald-800 border-emerald-300 hover:bg-emerald-100 transition shadow-sm";
+        fastingBtn.innerHTML = `⭕ Tandai Puasa Hari Ini`;
+      }
+
+      // Checklist items
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = '';
+
+      window.state.habits.forEach((habit) => {
+        const isChecked = Boolean(currentRecords[habit.id]);
+        const item = document.createElement('div');
+        item.onclick = () => toggleHabit(day, habit.id);
+        item.className = `p-4 flex items-center justify-between gap-4 cursor-pointer transition ${isChecked ? 'bg-emerald-50/50' : 'hover:bg-slate-50'}`;
+
+        const categoryStyles = {
+          'Ibadah': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+          'Kesehatan': 'bg-lime-100 text-lime-800 border-lime-200',
+          'Edukasi': 'bg-teal-100 text-teal-800 border-teal-200',
+          'Keluarga': 'bg-amber-100 text-amber-800 border-amber-200',
+          'Kebiasaan': 'bg-slate-100 text-slate-700 border-slate-200'
+        };
+        const catBadge = categoryStyles[habit.category] || categoryStyles['Kebiasaan'];
+
+        item.innerHTML = `
+          <div class="flex items-center gap-3.5 min-w-0">
+            <div class="flex-shrink-0">
+              ${isChecked 
+                ? `<div class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-sm font-bold text-xs">✓</div>` 
+                : `<div class="w-6 h-6 rounded-lg border-2 border-slate-300 bg-white"></div>`}
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-md border flex-shrink-0 ${isChecked ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-200'}">
+              ${habit.time}
+            </span>
+            <div class="min-w-0">
+              <p class="text-sm font-semibold truncate ${isChecked ? 'line-through text-slate-400' : 'text-slate-800'}">
+                ${habit.name}
+              </p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${catBadge}">
+            ${habit.category || 'Rutinitas'}
+          </span>
+        `;
+        container.appendChild(item);
+      });
+
+      // Daily Note
+      const noteInput = document.getElementById('daily-note-input');
+      const noteVal = window.state.dayNotes[day] || '';
+      noteInput.value = noteVal;
+      document.getElementById('note-char-count').textContent = noteVal.length + ' karakter';
+    }
+
+    function renderMatrix() {
+      const headRow = document.getElementById('matrix-head-days');
+      headRow.innerHTML = '';
+
+      for (let d = 1; d <= TOTAL_DAYS; d++) {
+        const { name, isMondayOrThursday } = getDayDetails(d);
+        const th = document.createElement('th');
+        th.className = `p-1.5 border border-emerald-100 text-center min-w-[32px] ${isMondayOrThursday ? 'bg-emerald-200/70 font-bold text-emerald-900' : 'text-slate-700'}`;
+        th.innerHTML = `<div>${name}</div><div class="text-sm font-extrabold">${d}</div>`;
+        headRow.appendChild(th);
+      }
+
+      const bodyRows = document.getElementById('matrix-body-rows');
+      bodyRows.innerHTML = '';
+
+      window.state.habits.forEach((habit) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50";
+
+        let tdName = `<td class="p-2 border border-slate-100 font-medium text-slate-800 sticky left-0 bg-white z-10 shadow-sm truncate max-w-[180px]">
+          <span class="text-[10px] text-emerald-700 font-mono mr-1">[${habit.time}]</span>${habit.name}
+        </td>`;
+
+        let tdDays = '';
+        for (let d = 1; d <= TOTAL_DAYS; d++) {
+          const isChecked = Boolean(window.state.records[d]?.[habit.id]);
+          tdDays += `
+            <td onclick="toggleHabit(${d}, '${habit.id}')" class="p-1 border border-slate-100 text-center cursor-pointer transition ${isChecked ? 'bg-emerald-500 text-white font-bold' : 'hover:bg-emerald-100/50'}">
+              ${isChecked ? '✓' : ''}
+            </td>
+          `;
+        }
+
+        tr.innerHTML = tdName + tdDays;
+        bodyRows.appendChild(tr);
+      });
+
+      // Fasting row in matrix
+      const fTr = document.createElement('tr');
+      fTr.className = "bg-emerald-50/50 font-bold";
+      let fTdName = `<td class="p-2 border border-slate-200 sticky left-0 bg-emerald-50 z-10 text-emerald-900">🌙 Puasa Sunnah</td>`;
+      let fTdDays = '';
+      for (let d = 1; d <= TOTAL_DAYS; d++) {
+        const isFasting = Boolean(window.state.fastingRecords[d]);
+        fTdDays += `
+          <td onclick="toggleFastingDay(${d})" class="p-1 border border-slate-200 text-center cursor-pointer ${isFasting ? 'bg-emerald-700 text-white font-extrabold' : ''}">
+            ${isFasting ? '☪' : ''}
+          </td>
+        `;
+      }
+      fTr.innerHTML = fTdName + fTdDays;
+      bodyRows.appendChild(fTr);
+    }
+
+    function renderManageList() {
+      const container = document.getElementById('manage-list-container');
+      container.innerHTML = '';
+
+      window.state.habits.forEach((habit, idx) => {
+        const div = document.createElement('div');
+        div.className = "p-4 flex items-center justify-between hover:bg-slate-50 gap-4";
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-bold text-slate-400 w-5">${idx + 1}.</span>
+            <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md border border-emerald-200">
+              ${habit.time}
+            </span>
+            <div>
+              <h4 class="text-sm font-semibold text-slate-800">${habit.name}</h4>
+              <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${habit.category || 'Ibadah'}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="openModal('${habit.id}')" class="p-2 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Edit">
+              ✏️
+            </button>
+            <button onclick="deleteHabit('${habit.id}')" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Hapus">
+              🗑️
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // ACTIONS
+    window.toggleHabit = function(day, habitId) {
+      if (!window.state.records[day]) window.state.records[day] = {};
+      window.state.records[day][habitId] = !window.state.records[day][habitId];
+      saveToCloud();
+      renderAll();
+    };
+
+    window.toggleFastingCurrentDay = function() {
+      const day = window.state.selectedDay;
+      window.toggleFastingDay(day);
+    };
+
+    window.toggleFastingDay = function(day) {
+      window.state.fastingRecords[day] = !window.state.fastingRecords[day];
+      saveToCloud();
+      renderAll();
+    };
+
+    window.handleNoteInput = function(val) {
+      const day = window.state.selectedDay;
+      window.state.dayNotes[day] = val;
+      document.getElementById('note-char-count').textContent = val.length + ' karakter';
+      saveToCloud();
+    };
+
+    window.prevDay = function() {
+      if (window.state.selectedDay > 1) {
+        window.state.selectedDay--;
+        renderAll();
+      }
+    };
+
+    window.nextDay = function() {
+      if (window.state.selectedDay < TOTAL_DAYS) {
+        window.state.selectedDay++;
+        renderAll();
+      }
+    };
+
+    window.switchTab = function(tab) {
+      window.state.activeTab = tab;
+      document.getElementById('view-daily').classList.add('hidden');
+      document.getElementById('view-matrix').classList.add('hidden');
+      document.getElementById('view-manage').classList.add('hidden');
+
+      const dailyBtn = document.getElementById('tab-daily-btn');
+      const matrixBtn = document.getElementById('tab-matrix-btn');
+      const manageBtn = document.getElementById('tab-manage-btn');
+
+      [dailyBtn, matrixBtn, manageBtn].forEach(b => {
+        b.className = "flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-white text-slate-600 hover:bg-emerald-50 border border-emerald-100 transition";
+      });
+
+      if (tab === 'daily') {
+        document.getElementById('view-daily').classList.remove('hidden');
+        dailyBtn.className = "flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-emerald-600 text-white shadow-md shadow-emerald-200 transition";
+      } else if (tab === 'matrix') {
+        document.getElementById('view-matrix').classList.remove('hidden');
+        matrixBtn.className = "flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-emerald-600 text-white shadow-md shadow-emerald-200 transition";
+      } else if (tab === 'manage') {
+        document.getElementById('view-manage').classList.remove('hidden');
+        manageBtn.className = "flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-emerald-600 text-white shadow-md shadow-emerald-200 transition";
+      }
+    };
+
+    // Modal Actions
+    window.openModal = function(habitId = null) {
+      const modal = document.getElementById('habit-modal');
+      const title = document.getElementById('modal-title');
+      const idInput = document.getElementById('modal-habit-id');
+      const timeInput = document.getElementById('modal-time-input');
+      const nameInput = document.getElementById('modal-name-input');
+      const categoryInput = document.getElementById('modal-category-input');
+
+      if (habitId) {
+        const habit = window.state.habits.find(h => h.id === habitId);
+        if (habit) {
+          title.textContent = 'Edit Rutinitas';
+          idInput.value = habit.id;
+          timeInput.value = habit.time;
+          nameInput.value = habit.name;
+          categoryInput.value = habit.category || 'Ibadah';
+        }
+      } else {
+        title.textContent = 'Tambah Rutinitas Baru';
+        idInput.value = '';
+        timeInput.value = '08.00';
+        nameInput.value = '';
+        categoryInput.value = 'Ibadah';
+      }
+
+      modal.classList.remove('hidden');
+    };
+
+    window.closeModal = function() {
+      document.getElementById('habit-modal').classList.add('hidden');
+    };
+
+    window.saveModalHabit = function() {
+      const id = document.getElementById('modal-habit-id').value;
+      const time = document.getElementById('modal-time-input').value.trim();
+      const name = document.getElementById('modal-name-input').value.trim();
+      const category = document.getElementById('modal-category-input').value;
+
+      if (!name || !time) return;
+
+      if (id) {
+        window.state.habits = window.state.habits.map(h => h.id === id ? { ...h, time, name, category } : h);
+        showToast('Rutinitas berhasil diperbarui');
+      } else {
+        const newHabit = {
+          id: 'h_' + Date.now(),
+          time,
+          name,
+          category
+        };
+        window.state.habits.push(newHabit);
+        showToast('Rutinitas baru ditambahkan');
+      }
+
+      window.state.habits.sort((a, b) => a.time.localeCompare(b.time));
+      saveToCloud();
+      closeModal();
+      renderAll();
+    };
+
+    window.deleteHabit = function(id) {
+      if (confirm('Hapus kegiatan ini dari daftar?')) {
+        window.state.habits = window.state.habits.filter(h => h.id !== id);
+        saveToCloud();
+        showToast('Rutinitas dihapus');
+        renderAll();
+      }
+    };
+
+    window.resetToDefaultPhoto = function() {
+      if (confirm('Kembalikan semua jadwal ke template awal sesuai foto?')) {
+        window.state.habits = [...DEFAULT_HABITS];
+        saveToCloud();
+        showToast('Jadwal dikembalikan sesuai foto');
+        renderAll();
+      }
+    };
+
+    // Share & Room Modal
+    window.openRoomModal = function() {
+      document.getElementById('room-id-input').value = window.state.trackerRoomId;
+      document.getElementById('room-modal').classList.remove('hidden');
+    };
+
+    window.closeRoomModal = function() {
+      document.getElementById('room-modal').classList.add('hidden');
+    };
+
+    window.changeRoomId = function() {
+      const newRoom = document.getElementById('room-id-input').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+      if (!newRoom) return;
+
+      window.state.trackerRoomId = newRoom;
+      document.getElementById('header-tracker-id').textContent = newRoom;
+
+      // Update URL query string silently
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set('tracker', newRoom);
+      window.history.replaceState({}, '', newUrl);
+
+      closeRoomModal();
+      attachRealtimeListener();
+      showToast('Beralih ke ID Publik: ' + newRoom);
+    };
+
+    window.sharePublicLink = function() {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('tracker', window.state.trackerRoomId);
+      const shareableLink = currentUrl.toString();
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareableLink).then(() => {
+          showToast('Link Publik Tersalin! Siap dibagikan.');
+        }).catch(() => {
+          showToast('Link: ' + shareableLink);
+        });
+      } else {
+        showToast('Link Publik: ' + shareableLink);
+      }
+    };
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = text;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 3000);
+    }
+
+    // Initialize Application
+    initFirebase();
+  </script>
+</body>
+</html>
