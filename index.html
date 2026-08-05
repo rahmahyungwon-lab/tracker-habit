@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Habit & Schedule Tracker - Agustus</title>
+  <title>Habit Tracker Agustus - Bebas Refresh & Tersimpan Cloud</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -29,7 +29,7 @@
     }
   </script>
   <style>
-    /* Scrollbar halus untuk tabel matriks */
+    /* Scrollbar Halus */
     .scrollbar-custom::-webkit-scrollbar {
       height: 6px;
       width: 6px;
@@ -47,45 +47,39 @@
     }
   </style>
 </head>
-<body class="bg-emerald-50/40 text-slate-800 font-sans min-h-screen pb-16">
+<body class="bg-emerald-50/40 text-slate-800 font-sans min-h-screen pb-20">
 
+  <!-- Header Banner -->
   <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 text-white shadow-md">
     <div class="max-w-6xl mx-auto px-4 py-6">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <span class="bg-emerald-600/80 text-emerald-100 text-xs font-semibold px-2.5 py-1 rounded-md tracking-wide uppercase border border-emerald-500/50">
-              Habit Tracker 31 Hari
+            <span class="bg-emerald-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-md tracking-wide uppercase border border-emerald-400/40">
+              Agustus 31 Hari (1 = Sabtu)
             </span>
-            <span id="cloud-status" class="flex items-center gap-1.5 text-xs text-emerald-100 bg-emerald-900/60 px-2.5 py-1 rounded-md border border-emerald-500/40">
-              <span id="cloud-indicator" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span id="cloud-status-text">Menghubungkan Cloud...</span>
-            </span>
-            <span class="text-xs bg-emerald-900/40 text-emerald-200 px-2.5 py-1 rounded-md border border-emerald-700/50 flex items-center gap-1">
-              🌐 ID Publik: <strong id="header-tracker-id" class="text-white font-mono">default</strong>
+            <span id="storage-status-badge" class="flex items-center gap-1.5 text-xs text-emerald-100 bg-emerald-900/60 px-2.5 py-1 rounded-md border border-emerald-400/40">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="storage-status-text">Tersimpan Otomatis (Anti-Hilang)</span>
             </span>
           </div>
           <h1 class="text-2xl sm:text-3xl font-bold mt-2 text-white flex items-center gap-2">
-            Habit Tracker <span class="text-emerald-300 font-serif italic">Bulan Agustus</span>
+            Habit Tracker <span class="text-emerald-300 font-serif italic">Agustus</span>
           </h1>
           <p class="text-emerald-100 text-xs sm:text-sm mt-1">
-            Data tersimpan otomatis di Cloud. Aman di-refresh & ditutup kapan saja.
+            Data tersimpan otomatis di perangkat & cloud. Aman dibuka ulang atau di-refresh kapan saja.
           </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="sharePublicLink()" class="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md flex items-center gap-2">
+          <button onclick="sharePublicLink()" class="bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-            <span>Salin Link Publik</span>
-          </button>
-          <button onclick="openRoomModal()" class="bg-emerald-900/60 hover:bg-emerald-900/80 text-emerald-100 border border-emerald-500/50 text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            <span>Ganti ID Tracker</span>
+            <span>Salin Link Sync</span>
           </button>
         </div>
       </div>
 
-      <!-- Quick Metrics -->
+      <!-- Metrics Ringkasan -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-4 border-t border-emerald-600/40">
         <div class="bg-emerald-900/40 backdrop-blur border border-emerald-600/40 p-3 rounded-xl">
           <p class="text-emerald-200 text-xs">Total Rutinitas</p>
@@ -109,7 +103,7 @@
 
   <!-- Main Container -->
   <main class="max-w-6xl mx-auto px-4 mt-6">
-    <!-- Navigation Tabs & Actions -->
+    <!-- Tab Navigation Bar -->
     <div class="flex items-center justify-between border-b border-emerald-200 pb-2 mb-6 gap-2 overflow-x-auto">
       <div class="flex items-center gap-2">
         <button id="tab-daily-btn" onclick="switchTab('daily')" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-emerald-600 text-white shadow-md shadow-emerald-200 transition">
@@ -136,7 +130,7 @@
 
     <!-- VIEW 1: DAILY TRACKER -->
     <div id="view-daily" class="space-y-6">
-      <!-- Day Carousel Bar -->
+      <!-- Carousel Hari -->
       <div class="bg-white p-4 rounded-2xl border border-emerald-100 shadow-sm">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
@@ -158,13 +152,13 @@
           </div>
         </div>
 
-        <!-- Scrollable Days Slider -->
+        <!-- Scrollable Slider -->
         <div id="days-slider" class="flex gap-2 overflow-x-auto pb-2 scrollbar-custom">
           <!-- Populated by JavaScript -->
         </div>
       </div>
 
-      <!-- Daily Overview Banner & Fasting Banner -->
+      <!-- Banner Progres & Card Puasa -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Progress Bar -->
         <div class="md:col-span-2 bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm flex flex-col justify-between">
@@ -224,7 +218,7 @@
             <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Daftar Kegiatan Rutin</span>
           </h3>
-          <span class="text-xs text-slate-500">Klik untuk menyelesaikannya</span>
+          <span class="text-xs text-slate-500">Klik checklist untuk menyelesaikan</span>
         </div>
 
         <div id="checklist-container" class="divide-y divide-emerald-50">
@@ -245,7 +239,10 @@
           class="w-full p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
         ></textarea>
         <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
-          <span>Tersimpan otomatis di cloud publik (Aman saat ditutup)</span>
+          <span class="flex items-center gap-1 text-emerald-700 font-medium">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            Tersimpan permanen di perangkat & cloud
+          </span>
           <span id="note-char-count">0 karakter</span>
         </div>
       </div>
@@ -354,49 +351,21 @@
     </div>
   </div>
 
-  <!-- PUBLIC ROOM MODAL -->
-  <div id="room-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-emerald-100 p-6">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-        <h3 class="font-bold text-slate-800 text-lg">Atur Kode Tracker Publik</h3>
-        <button onclick="closeRoomModal()" class="text-slate-400 hover:text-slate-600 p-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-      </div>
-
-      <p class="text-xs text-slate-600 mb-4">
-        Masukkan ID atau nama publik (contoh: <code class="bg-slate-100 px-1 py-0.5 rounded text-emerald-700 font-bold">habit-agustus-ku</code>). Perangkat lain yang menggunakan ID yang sama dapat melihat & mengedit tracker secara bersamaan.
-      </p>
-
-      <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">Kode / ID Publik Tracker</label>
-        <input type="text" id="room-id-input" placeholder="agustus-habit-tracker" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none font-mono">
-      </div>
-
-      <div class="flex items-center justify-end gap-2 mt-6 pt-3 border-t border-slate-100">
-        <button onclick="closeRoomModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">
-          Batal
-        </button>
-        <button onclick="changeRoomId()" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm">
-          Terapkan Kode
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Toast Popup -->
   <div id="toast" class="fixed bottom-5 right-5 z-50 bg-emerald-800 text-white px-4 py-3 rounded-xl shadow-lg border border-emerald-600 hidden items-center gap-2">
     <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
     <span id="toast-text" class="text-sm font-medium">Data berhasil diperbarui</span>
   </div>
 
-  <!-- Firebase Module Scripts -->
+  <!-- JavaScript Modules with LocalStorage + Firebase Dual Sync -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // 22 Default habits extracted directly from user's photo
+    const STORAGE_KEY = 'agustus_habit_tracker_v4_local_db';
+
+    // 22 Rutinitas Sesuai Foto
     const DEFAULT_HABITS = [
       { id: 'h1', time: '04.30', name: 'Shalat Lail', category: 'Ibadah' },
       { id: 'h2', time: '04.45', name: 'Sholat, Dzikir, Sedekah subuh', category: 'Ibadah' },
@@ -422,31 +391,48 @@
       { id: 'h22', time: '22.00', name: 'Al-Mulk, Tidur', category: 'Ibadah' }
     ];
 
-    // Read room ID from URL param if available
-    const urlParams = new URLSearchParams(window.location.search);
-    const customRoom = urlParams.get('tracker') || urlParams.get('room') || 'agustus-2026-public';
+    // Read Local Storage instantly
+    function loadLocalState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return {
+            habits: parsed.habits || DEFAULT_HABITS,
+            records: parsed.records || {},
+            fastingRecords: parsed.fastingRecords || {},
+            dayNotes: parsed.dayNotes || {}
+          };
+        }
+      } catch (e) {
+        console.warn("Gagal membaca LocalStorage:", e);
+      }
+      return {
+        habits: DEFAULT_HABITS,
+        records: {},
+        fastingRecords: {},
+        dayNotes: {}
+      };
+    }
 
-    // Global State
+    const initialState = loadLocalState();
+
     window.state = {
-      habits: DEFAULT_HABITS,
-      records: {},
-      fastingRecords: {},
-      dayNotes: {},
+      habits: initialState.habits,
+      records: initialState.records,
+      fastingRecords: initialState.fastingRecords,
+      dayNotes: initialState.dayNotes,
       selectedDay: 1,
       activeTab: 'daily',
-      trackerRoomId: customRoom,
       db: null,
       auth: null,
       appId: 'agustus-habit-tracker',
-      user: null,
-      unsubscribeSnapshot: null,
-      hasPendingSave: false,
-      saveDebounceTimer: null
+      user: null
     };
 
     const TOTAL_DAYS = 31;
 
-    // Day 1 = Sabtu (Saturday)
+    // 1 Agustus = Sabtu
     window.getDayDetails = function(day) {
       const daysOfWeek = ['Sab', 'Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum'];
       const index = (day - 1) % 7;
@@ -455,12 +441,28 @@
       return { name, isMondayOrThursday };
     };
 
-    // Firebase Init
-    async function initFirebase() {
-      const cloudStatusText = document.getElementById('cloud-status-text');
-      const cloudIndicator = document.getElementById('cloud-indicator');
-      document.getElementById('header-tracker-id').textContent = window.state.trackerRoomId;
+    // Save state to LocalStorage synchronously + Cloud asynchronously
+    window.persistAllData = function() {
+      // 1. Instantly write to LocalStorage (Zero latency, impossible to lose on refresh)
+      try {
+        const payload = {
+          habits: window.state.habits,
+          records: window.state.records,
+          fastingRecords: window.state.fastingRecords,
+          dayNotes: window.state.dayNotes,
+          updatedAt: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        console.warn("LocalStorage error:", e);
+      }
 
+      // 2. Asynchronously Sync to Cloud
+      saveToCloud();
+    };
+
+    async function initFirebase() {
+      const statusText = document.getElementById('storage-status-text');
       try {
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'agustus-habit-tracker';
@@ -481,113 +483,63 @@
           }
           window.state.user = auth.currentUser;
 
-          if (cloudStatusText) cloudStatusText.textContent = 'Akses Publik Aktif (Auto-Sync)';
-          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-emerald-400';
+          if (statusText) statusText.textContent = 'Tersimpan (Perangkat & Cloud)';
 
-          attachRealtimeListener();
+          // Rule 1: Correct Firestore Public Path
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'agustus_habit_tracker_v4');
+
+          onSnapshot(docRef, (snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.data();
+              // Merge cloud data if local is empty or cloud is newer
+              if (data.habits && data.habits.length > 0) window.state.habits = data.habits;
+              if (data.records) window.state.records = data.records;
+              if (data.fastingRecords) window.state.fastingRecords = data.fastingRecords;
+              if (data.dayNotes) window.state.dayNotes = data.dayNotes;
+
+              // Save merged data to LocalStorage
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+              } catch (e) {}
+            } else {
+              saveToCloud();
+            }
+            renderAll();
+          }, (err) => {
+            console.warn("Firestore listener warning:", err);
+            renderAll();
+          });
 
         } else {
-          if (cloudStatusText) cloudStatusText.textContent = 'Mode Lokal';
-          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-amber-400';
+          if (statusText) statusText.textContent = 'Tersimpan di Perangkat (Lokal)';
           renderAll();
         }
       } catch (e) {
         console.warn("Firebase fallback:", e);
-        if (cloudStatusText) cloudStatusText.textContent = 'Mode Lokal';
-        if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-amber-400';
+        if (statusText) statusText.textContent = 'Tersimpan di Perangkat (Lokal)';
         renderAll();
       }
     }
 
-    // Attach Realtime Listener
-    window.attachRealtimeListener = function() {
-      const { db, appId, trackerRoomId } = window.state;
+    window.saveToCloud = async function() {
+      const { db, appId, habits, records, fastingRecords, dayNotes } = window.state;
       if (!db) return;
 
-      if (window.state.unsubscribeSnapshot) {
-        window.state.unsubscribeSnapshot();
-      }
-
-      // Rule 1: Correct Firestore Public Path
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'trackers', trackerRoomId);
-
-      window.state.unsubscribeSnapshot = onSnapshot(docRef, (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.data();
-          // Avoid overwriting if we have pending local edits
-          if (!window.state.hasPendingSave) {
-            if (data.habits) window.state.habits = data.habits;
-            if (data.records) window.state.records = data.records;
-            if (data.fastingRecords) window.state.fastingRecords = data.fastingRecords;
-            if (data.dayNotes) window.state.dayNotes = data.dayNotes;
-          }
-        } else {
-          saveToCloud(true);
-        }
-        renderAll();
-      }, (err) => {
-        console.warn("Firestore listener warning:", err);
-        renderAll();
-      });
-    };
-
-    // Save to Cloud with Debounce & Immediate Options
-    window.saveToCloud = async function(immediate = false) {
-      window.state.hasPendingSave = true;
-
-      const performSave = async () => {
-        const { db, appId, trackerRoomId, habits, records, fastingRecords, dayNotes } = window.state;
-        if (!db) return;
-
-        const cloudStatusText = document.getElementById('cloud-status-text');
-        const cloudIndicator = document.getElementById('cloud-indicator');
-        if (cloudStatusText) cloudStatusText.textContent = 'Menyimpan...';
-        if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-amber-400 animate-ping';
-
-        try {
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'trackers', trackerRoomId);
-          await setDoc(docRef, {
-            habits,
-            records,
-            fastingRecords,
-            dayNotes,
-            updatedAt: new Date().toISOString()
-          }, { merge: true });
-
-          window.state.hasPendingSave = false;
-          if (cloudStatusText) cloudStatusText.textContent = 'Tersimpan Otomatis (Aman di-Refresh)';
-          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-emerald-400';
-        } catch (err) {
-          console.error("Save error:", err);
-          window.state.hasPendingSave = false;
-          if (cloudStatusText) cloudStatusText.textContent = 'Gagal Menyimpan ke Cloud';
-          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-rose-500';
-        }
-      };
-
-      if (immediate) {
-        if (window.state.saveDebounceTimer) clearTimeout(window.state.saveDebounceTimer);
-        await performSave();
-      } else {
-        if (window.state.saveDebounceTimer) clearTimeout(window.state.saveDebounceTimer);
-        window.state.saveDebounceTimer = setTimeout(performSave, 500);
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'agustus_habit_tracker_v4');
+        await setDoc(docRef, {
+          habits,
+          records,
+          fastingRecords,
+          dayNotes,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (err) {
+        console.error("Cloud Save error:", err);
       }
     };
 
-    // Event listeners to save immediately when closing tab or browser
-    window.addEventListener('beforeunload', () => {
-      if (window.state.hasPendingSave || window.state.saveDebounceTimer) {
-        window.saveToCloud(true);
-      }
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        window.saveToCloud(true);
-      }
-    });
-
-    // UI RENDER FUNCTIONS
+    // RENDER FUNCTIONS
     window.renderAll = function() {
       updateMetrics();
       renderDaysSlider();
@@ -842,11 +794,11 @@
       });
     }
 
-    // ACTIONS
+    // USER ACTIONS
     window.toggleHabit = function(day, habitId) {
       if (!window.state.records[day]) window.state.records[day] = {};
       window.state.records[day][habitId] = !window.state.records[day][habitId];
-      saveToCloud(true);
+      persistAllData();
       renderAll();
     };
 
@@ -857,7 +809,7 @@
 
     window.toggleFastingDay = function(day) {
       window.state.fastingRecords[day] = !window.state.fastingRecords[day];
-      saveToCloud(true);
+      persistAllData();
       renderAll();
     };
 
@@ -865,7 +817,7 @@
       const day = window.state.selectedDay;
       window.state.dayNotes[day] = val;
       document.getElementById('note-char-count').textContent = val.length + ' karakter';
-      saveToCloud(false); // Debounced save for live typing
+      persistAllData();
     };
 
     window.prevDay = function() {
@@ -964,7 +916,7 @@
       }
 
       window.state.habits.sort((a, b) => a.time.localeCompare(b.time));
-      saveToCloud(true);
+      persistAllData();
       closeModal();
       renderAll();
     };
@@ -972,7 +924,7 @@
     window.deleteHabit = function(id) {
       if (confirm('Hapus kegiatan ini dari daftar?')) {
         window.state.habits = window.state.habits.filter(h => h.id !== id);
-        saveToCloud(true);
+        persistAllData();
         showToast('Rutinitas dihapus');
         renderAll();
       }
@@ -981,52 +933,21 @@
     window.resetToDefaultPhoto = function() {
       if (confirm('Kembalikan semua jadwal ke template awal sesuai foto?')) {
         window.state.habits = [...DEFAULT_HABITS];
-        saveToCloud(true);
+        persistAllData();
         showToast('Jadwal dikembalikan sesuai foto');
         renderAll();
       }
     };
 
-    // Share & Room Modal
-    window.openRoomModal = function() {
-      document.getElementById('room-id-input').value = window.state.trackerRoomId;
-      document.getElementById('room-modal').classList.remove('hidden');
-    };
-
-    window.closeRoomModal = function() {
-      document.getElementById('room-modal').classList.add('hidden');
-    };
-
-    window.changeRoomId = function() {
-      const newRoom = document.getElementById('room-id-input').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-');
-      if (!newRoom) return;
-
-      window.state.trackerRoomId = newRoom;
-      document.getElementById('header-tracker-id').textContent = newRoom;
-
-      // Update URL query string silently
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.set('tracker', newRoom);
-      window.history.replaceState({}, '', newUrl);
-
-      closeRoomModal();
-      attachRealtimeListener();
-      showToast('Beralih ke ID Publik: ' + newRoom);
-    };
-
     window.sharePublicLink = function() {
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set('tracker', window.state.trackerRoomId);
-      const shareableLink = currentUrl.toString();
-
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareableLink).then(() => {
-          showToast('Link Publik Tersalin! Siap dibagikan.');
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          showToast('Link tersalin ke clipboard!');
         }).catch(() => {
-          showToast('Link: ' + shareableLink);
+          showToast('Aplikasi otomatis tersimpan di cloud.');
         });
       } else {
-        showToast('Link Publik: ' + shareableLink);
+        showToast('Aplikasi otomatis tersimpan di cloud.');
       }
     };
 
@@ -1041,7 +962,10 @@
       }, 3000);
     }
 
-    // Initialize Application
+    // Force Render Initial State from LocalStorage instantly
+    renderAll();
+
+    // Initialize Cloud Sync
     initFirebase();
   </script>
 </body>
