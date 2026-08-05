@@ -49,7 +49,6 @@
 </head>
 <body class="bg-emerald-50/40 text-slate-800 font-sans min-h-screen pb-16">
 
-  <!-- Header Section -->
   <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 text-white shadow-md">
     <div class="max-w-6xl mx-auto px-4 py-6">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -60,7 +59,7 @@
             </span>
             <span id="cloud-status" class="flex items-center gap-1.5 text-xs text-emerald-100 bg-emerald-900/60 px-2.5 py-1 rounded-md border border-emerald-500/40">
               <span id="cloud-indicator" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span id="cloud-status-text">Menghubungkan Cloud Publik...</span>
+              <span id="cloud-status-text">Menghubungkan Cloud...</span>
             </span>
             <span class="text-xs bg-emerald-900/40 text-emerald-200 px-2.5 py-1 rounded-md border border-emerald-700/50 flex items-center gap-1">
               🌐 ID Publik: <strong id="header-tracker-id" class="text-white font-mono">default</strong>
@@ -70,7 +69,7 @@
             Habit Tracker <span class="text-emerald-300 font-serif italic">Bulan Agustus</span>
           </h1>
           <p class="text-emerald-100 text-xs sm:text-sm mt-1">
-            Dapat diakses publik dari mana saja. 1 Agustus = Sabtu.
+            Data tersimpan otomatis di Cloud. Aman di-refresh & ditutup kapan saja.
           </p>
         </div>
 
@@ -246,7 +245,7 @@
           class="w-full p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
         ></textarea>
         <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
-          <span>Tersimpan otomatis di cloud publik</span>
+          <span>Tersimpan otomatis di cloud publik (Aman saat ditutup)</span>
           <span id="note-char-count">0 karakter</span>
         </div>
       </div>
@@ -440,7 +439,9 @@
       auth: null,
       appId: 'agustus-habit-tracker',
       user: null,
-      unsubscribeSnapshot: null
+      unsubscribeSnapshot: null,
+      hasPendingSave: false,
+      saveDebounceTimer: null
     };
 
     const TOTAL_DAYS = 31;
@@ -480,7 +481,7 @@
           }
           window.state.user = auth.currentUser;
 
-          if (cloudStatusText) cloudStatusText.textContent = 'Akses Publik Aktif';
+          if (cloudStatusText) cloudStatusText.textContent = 'Akses Publik Aktif (Auto-Sync)';
           if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-emerald-400';
 
           attachRealtimeListener();
@@ -508,17 +509,20 @@
       }
 
       // Rule 1: Correct Firestore Public Path
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'agustus_tracker_' + trackerRoomId);
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'trackers', trackerRoomId);
 
       window.state.unsubscribeSnapshot = onSnapshot(docRef, (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.data();
-          if (data.habits) window.state.habits = data.habits;
-          if (data.records) window.state.records = data.records;
-          if (data.fastingRecords) window.state.fastingRecords = data.fastingRecords;
-          if (data.dayNotes) window.state.dayNotes = data.dayNotes;
+          // Avoid overwriting if we have pending local edits
+          if (!window.state.hasPendingSave) {
+            if (data.habits) window.state.habits = data.habits;
+            if (data.records) window.state.records = data.records;
+            if (data.fastingRecords) window.state.fastingRecords = data.fastingRecords;
+            if (data.dayNotes) window.state.dayNotes = data.dayNotes;
+          }
         } else {
-          saveToCloud();
+          saveToCloud(true);
         }
         renderAll();
       }, (err) => {
@@ -527,30 +531,61 @@
       });
     };
 
-    // Save to Cloud
-    window.saveToCloud = async function() {
-      const { db, appId, trackerRoomId, habits, records, fastingRecords, dayNotes } = window.state;
-      if (!db) return;
+    // Save to Cloud with Debounce & Immediate Options
+    window.saveToCloud = async function(immediate = false) {
+      window.state.hasPendingSave = true;
 
-      const cloudStatusText = document.getElementById('cloud-status-text');
-      if (cloudStatusText) cloudStatusText.textContent = 'Menyimpan ke Cloud...';
+      const performSave = async () => {
+        const { db, appId, trackerRoomId, habits, records, fastingRecords, dayNotes } = window.state;
+        if (!db) return;
 
-      try {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'agustus_tracker_' + trackerRoomId);
-        await setDoc(docRef, {
-          habits,
-          records,
-          fastingRecords,
-          dayNotes,
-          updatedAt: new Date().toISOString()
-        }, { merge: true });
+        const cloudStatusText = document.getElementById('cloud-status-text');
+        const cloudIndicator = document.getElementById('cloud-indicator');
+        if (cloudStatusText) cloudStatusText.textContent = 'Menyimpan...';
+        if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-amber-400 animate-ping';
 
-        if (cloudStatusText) cloudStatusText.textContent = 'Akses Publik Aktif';
-      } catch (err) {
-        console.error("Save error:", err);
-        if (cloudStatusText) cloudStatusText.textContent = 'Gagal menyimpan';
+        try {
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'trackers', trackerRoomId);
+          await setDoc(docRef, {
+            habits,
+            records,
+            fastingRecords,
+            dayNotes,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+
+          window.state.hasPendingSave = false;
+          if (cloudStatusText) cloudStatusText.textContent = 'Tersimpan Otomatis (Aman di-Refresh)';
+          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        } catch (err) {
+          console.error("Save error:", err);
+          window.state.hasPendingSave = false;
+          if (cloudStatusText) cloudStatusText.textContent = 'Gagal Menyimpan ke Cloud';
+          if (cloudIndicator) cloudIndicator.className = 'w-2 h-2 rounded-full bg-rose-500';
+        }
+      };
+
+      if (immediate) {
+        if (window.state.saveDebounceTimer) clearTimeout(window.state.saveDebounceTimer);
+        await performSave();
+      } else {
+        if (window.state.saveDebounceTimer) clearTimeout(window.state.saveDebounceTimer);
+        window.state.saveDebounceTimer = setTimeout(performSave, 500);
       }
     };
+
+    // Event listeners to save immediately when closing tab or browser
+    window.addEventListener('beforeunload', () => {
+      if (window.state.hasPendingSave || window.state.saveDebounceTimer) {
+        window.saveToCloud(true);
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        window.saveToCloud(true);
+      }
+    });
 
     // UI RENDER FUNCTIONS
     window.renderAll = function() {
@@ -811,7 +846,7 @@
     window.toggleHabit = function(day, habitId) {
       if (!window.state.records[day]) window.state.records[day] = {};
       window.state.records[day][habitId] = !window.state.records[day][habitId];
-      saveToCloud();
+      saveToCloud(true);
       renderAll();
     };
 
@@ -822,7 +857,7 @@
 
     window.toggleFastingDay = function(day) {
       window.state.fastingRecords[day] = !window.state.fastingRecords[day];
-      saveToCloud();
+      saveToCloud(true);
       renderAll();
     };
 
@@ -830,7 +865,7 @@
       const day = window.state.selectedDay;
       window.state.dayNotes[day] = val;
       document.getElementById('note-char-count').textContent = val.length + ' karakter';
-      saveToCloud();
+      saveToCloud(false); // Debounced save for live typing
     };
 
     window.prevDay = function() {
@@ -929,7 +964,7 @@
       }
 
       window.state.habits.sort((a, b) => a.time.localeCompare(b.time));
-      saveToCloud();
+      saveToCloud(true);
       closeModal();
       renderAll();
     };
@@ -937,7 +972,7 @@
     window.deleteHabit = function(id) {
       if (confirm('Hapus kegiatan ini dari daftar?')) {
         window.state.habits = window.state.habits.filter(h => h.id !== id);
-        saveToCloud();
+        saveToCloud(true);
         showToast('Rutinitas dihapus');
         renderAll();
       }
@@ -946,7 +981,7 @@
     window.resetToDefaultPhoto = function() {
       if (confirm('Kembalikan semua jadwal ke template awal sesuai foto?')) {
         window.state.habits = [...DEFAULT_HABITS];
-        saveToCloud();
+        saveToCloud(true);
         showToast('Jadwal dikembalikan sesuai foto');
         renderAll();
       }
